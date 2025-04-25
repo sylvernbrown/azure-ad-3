@@ -3,7 +3,7 @@
 </p>
 
 <h1>Active Directory: Group Policy & Account Management in the Cloud (Azure)(3/3)</h1>
-This tutorial outlines the setup of the pre-requisite Microsoft Azure architecture for Active Directory & the creation of Users in Active Directory using PowerShell.<br />
+This tutorial outlines common functions in Active Directory that are used to manage group policy and users.<br />
 
 
 <h2>Environments and Technologies Used</h2>
@@ -28,7 +28,7 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <h2>Group Policy & Account Management Steps</h2>
 
 <p>
-1) Log into <strong>dc-1</strong> as an administrator, navigate to the search bar, and type <strong>"run"</strong>. Then, type <strong>"gpmc.msc</strong>. <br />
+1) Log into <strong>dc-1</strong> as an administrator, navigate to the search bar, and type <strong>"run"</strong>. Then, type <strong>"gpmc.msc"</strong>. <br />
   <br />
 <img src="https://i.imgur.com/Y8DOtZ9.png" height="40%" width="60%" alt="Disk Sanitization Steps"/><br />
 </p>
@@ -83,7 +83,7 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 
 
 <p>
-6) The end result should show something like this in <strong>Group Policy Management Editor</strong>.  Notice, default settings for <strong>"Reset account lockout counter after" & "Allow Administrator account lockout"</strong> both automatically enable.<br />
+6) The end result should show something like this in <strong>Group Policy Management Editor</strong>.  Notice: Default settings for <strong>"Reset account lockout counter after" & "Allow Administrator account lockout"</strong> both automatically enable.<br />
   <br />
 <img src="https://i.imgur.com/mSqrYXO.png" height="60%" width="80%" alt="Disk Sanitization Steps"/> <br />
   
@@ -94,7 +94,7 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <br />
 
 <p>
-7) While the changes have been enabled, they would take 90 minutes to apply in the domain controller without manually enabling them.  To manually enable to configurations, login to the domain controller (dc-1) as an admin. <br />
+7) While the changes have been enabled, they would take 90 minutes to apply in the domain controller automatically.  To manually enable to configurations, login to the domain controller (dc-1) as an admin. <br />
   <br />
 <img src="https://i.imgur.com/KbNMSd5.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
   
@@ -180,7 +180,7 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <br />
 
 <p>
-14) When logging into <strong>client-1</strong> with a disabled account, the following message would display. <br />
+14) When logging into <strong>client-1</strong> with a disabled account (bat.cop), the following message would display. <br />
   <br />
 <img src="https://i.imgur.com/HERSlxx.png" height="60%" width="40%" alt="Disk Sanitization Steps"/> <br />
  
