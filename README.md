@@ -17,17 +17,15 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 - Windows Server 2022
 - Windows 10 (21H2)
   
-<h2>High-Level Setup & Deployment Steps</h2>
+<h2>High-Level Group Policy & Account Management Steps</h2>
 
-- Install Active Directory on the Domain Controller VM
-- Create a Domain Admin user within the domain
-- Join Client-1 (VM #2) with the new domain (mydomain.com)
-- Set up Remote Desktop for non-administrative users on Client-1
-- Create additional users using PowerShell
-- Log on to Client-1 with a randomly generated user from PowerShell
+- Managing Account Lockouts
+- Resetting Account Passwords
+- Enabling & Disabling Accounts
+- Observing Logs
 
 
-<h2>Setup & Deployment Steps</h2>
+<h2>Group Policy & Account Management Steps</h2>
 
 <p>
 1) Log into <strong>dc-1</strong> as an administrator, navigate to the search bar, and type <strong>"run"</strong>. Then, type <strong>"gpmc.msc</strong>. <br />
