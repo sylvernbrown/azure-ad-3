@@ -30,18 +30,18 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <h2>Setup & Deployment Steps</h2>
 
 <p>
-1) Log into <strong>dc-1</strong> and select <strong>"Add Roles and Features"</strong> in the Server Manager Dashboard.<br />
+1) Log into <strong>dc-1</strong> as an administrator, navigate to the search bar, and type <strong>"run"</strong>. Then, type <strong>"gpmc.msc</strong>. <br />
   <br />
-<img src="https://i.imgur.com/yQpm7IK.png" height="60%" width="80%" alt="Disk Sanitization Steps"/><br />
+<img src="https://i.imgur.com/Y8DOtZ9.png" height="60%" width="80%" alt="Disk Sanitization Steps"/><br />
 </p>
 <br />
 <br />
 <br />
 
 <p>
-2) To install Active Directory Domain Services, navigate to <strong>Server Roles > Active Directory Domain Services</strong>.  Continue with installation from that point forward.<br />
+2) In the <strong>Group Policy Management</strong> window, <strong>[Right Click] Default Domain > Edit</strong>.  This will allow for the configuration of account lockout settings.<br />
   <br />
-<img src="https://i.imgur.com/7goyu1N.png" height="60%" width="80%" alt="Disk Sanitization Steps"/><br />
+<img src="https://i.imgur.com/IAzqRP4.png" height="60%" width="80%" alt="Disk Sanitization Steps"/><br />
 </p>
 <br />
 <br />
@@ -49,9 +49,9 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <br />
 
 <p>
-3) Next, to make <strong>dc-1</strong> a domain controller, navigate to the <strong>Server Manager Dashboard</strong>. Click on the flag with the orange triangle and <strong>"Promote this server to a new domain controller"</strong>. <br />
+3) Navigate to: <strong>Account Lockout Policy > Account Lockout Duration | Account Lockout Threshold</strong>. <br />
   <br />
-<img src="https://i.imgur.com/f7C8uzQ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/Z9m5d4A.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
 </p>
 <br />
 <br />
@@ -60,9 +60,9 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 
 
 <p>
-4) Next, navigate to <strong>Deployment Configuration > Add a New Forest > [enter] mydomain.com (or any alternative domain name) </strong>.<br />
+4) Once in <strong>Account lockout duration Properties</strong>, select the desired time frame for an account to remain locked after being locked out.  In this example, I set it to 30 minutes.<br />
   <br />
-<img src="https://i.imgur.com/bwRgVP5.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/Y4RC6rd.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
   
 </p>
 <br />
@@ -74,9 +74,9 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 
 
 <p>
-5) Since we are logged on locally to <strong>dc-1</strong>, log out and re-login using the new domain name information as seen below.  From this point forward, we will be using our domain <strong>mydomain.com</strong> to access our virtual machines using Active Directory.<br />
+5) Then, navigate to <strong>Account lockout threshold properties</strong> and decide on a maximum threshold for consecutive login attempts, for this example I set it at 10.<br />
   <br />
-<img src="https://i.imgur.com/53IgUIW.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/giDSs0Z.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
   
 </p>
 <br />
@@ -86,9 +86,9 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 
 
 <p>
-6) Now we are going to create an employees organizational unit in <strong>Active Directory Users and Computers (ADUC)</strong>. Navigate to <strong>search</strong> and enter <strong>Active Directory Users and Computers</strong>. [Right click] <strong>mydomain.com > New > Organizational Unit </strong> <br />
+6) The end result should show something like this in <strong>Group Policy Management Editor.  Notice, default settings for <strong>"Reset account lockout counter after" & "Allow Administrator account lockout" both automatically enable, feel free to change these at will as well.</strong></strong><br />
   <br />
-<img src="https://i.imgur.com/ksyL5Qj.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/mSqrYXO.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
   <strong><i>Note: This configuration takes place within dc-1. Ensure that the following steps are on the correct VM.</i></strong>
   
 </p>
@@ -98,9 +98,9 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <br />
 
 <p>
-7) Name the Organizational Unit <strong>"_EMPLOYEES"</strong>. <br />
+7) WHile the changes have been enabled, they would take 90 minutes to apply in the domain controller without manually enabling them.  To manually enable to configurations, navigate to the domain controller (dc-1) as an admin. <br />
   <br />
-<img src="https://i.imgur.com/PBGXTKW.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/KbNMSd5.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
   <strong><i>Note: It's crucial the name _EMPLOYEES is entered verbatim or else later steps will not work.</i></strong>
   
 </p>
@@ -110,9 +110,9 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <br />
 
 <p>
-8) Add another Organizational Unit named <strong>"_ADMINS"</strong>.<br />
+8) Open the command prompt as an administrator, and type <strong>"gpupdate /force"</strong>.  As you can see, the updates should complete successfully.<br />
   <br />
-<img src="https://i.imgur.com/8slDvvw.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/oLp9sTF.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
   
 </p>
 <br />
@@ -121,20 +121,9 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <br />
 
 <p>
-9) Now, we will add a user to the <strong>"_ADMINS"</strong> Organizational Unit. Navigate to <strong>Active Directory Users and Computers > [right click] _ADMINS (under mydomain.com) > New > User. </strong> <br />
+  10) Next, test the changes made in the domain controller by logging in incorrectly on <strong>Client-1</strong> incorrectly at least 10 times.  If the changes were successful, you should see a prompt like this. <br />
   <br />
-<img src="https://i.imgur.com/F6ztp6l.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
- 
-</p>
-<br />
-<br />
-<br />
-<br />
-
-<p>
-  10) For demonstration purposes, the user is named <strong>Jane Doe</strong>.  However, the specific name is less important; just any username that can be easily remembered for testing purposes will do.  However, be sure to note the username and password for login purposes later on. <br />
-  <br />
-<img src="https://i.imgur.com/G4MblJ7.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/aLWHOX5.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
 <strong><i>Note: "Jane Admin" will be the administrator for the Active Directory system in this demonstration, be sure to write down the administrator and their logon info for future use and configurations.</i></strong>
 </p>
 <br />
@@ -143,42 +132,26 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <br />
 
 <p>
-11) Once <strong>"Jane Doe"</strong> is added as a user in the <strong>"_Admins"</strong> OU, <strong>[right click] Jane Doe > [select] Properties</strong>.<br />
+11) To unlock the account <strong>bat.cop</strong> and restore access, we will have to unlock his account in Active Directory on the domain controller.  Navigate to: [dc-1 VM] > Active Directory Users and Computers > [Right Click] mydomain.com > Find > [Username].<br />
   <br />
-<img src="https://i.imgur.com/pVeRDwq.png" height="60%" width="60%" alt="Disk Sanitization Steps"/><br />
+<img src="https://i.imgur.com/VhgqfKR.png" height="60%" width="60%" alt="Disk Sanitization Steps"/><br />
+<img src="https://i.imgur.com/6NtxHAi.png" height="80%" width="60%" alt="Disk Sanitization Steps"/><br />
+<img src="https://i.imgur.com/MaUR8kV.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
 </p>
 <br />
 <br />
 <br />
 
-<p>
-12) In the properties section of Jane Doe, select <strong>"Member of"</strong> and select <strong>"Add"</strong>.  A text box will appear, type <Strong>"Domain Admins"</Strong>.  This will grant Admin permissions to <strong>Jane Doe</strong>, the Organizational Unit alone will not do this automatically. <br />
-  <br />
-<img src="https://i.imgur.com/2HmXThg.png" height="80%" width="60%" alt="Disk Sanitization Steps"/><br />
-</p>
-<br />
-<br />
-<br />
-<br />
-
-<p>
-13) Now, disconnect from <strong>dc-1</strong> to logon to <strong>Client-1</strong> using our updated <strong>"Jane Doe"</strong> admin. <br />
-  <br />
-<img src="https://i.imgur.com/oeywsHB.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
-</p>
-<br />
-<br />
-<br />
-<br />
 
 
 <p>
-14) Now, log into <strong>Client-1</strong> using the following information.<br />
+14) After finding the user you wish to unlock, navigate to the user's properties. <strong>[Right Click] "bat.cop" > Properties > Account > [Select] "Unlock account"</strong>.<br />
   <br />
   <strong>Username:</strong>mydomain.com\[username] <br />
   <strong>Password:</strong>[password]
   <br />
-<img src="https://i.imgur.com/i2VnmpL.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/cFtosjK.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/3w0jPVj.png" height="80%" width="60%" alt="Disk Sanitization Steps"/> <br />
   
 </p>
 <br />
@@ -190,9 +163,22 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 
 
 <p>
-15) Now, we are going to join <strong>Client-1</strong> to our newly-created domain. Navigate to <strong> Settings > About > Rename this PC (Advanced)</strong><br />
+15) If you need to reset a password for a particular user, once again navigate to the user.  Once you find the user, right click and select <Strong>"Reset Password".</Strong><br />
   <br />
-<img src="https://i.imgur.com/rafTcaK.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/3w0jPVj.png" height="80%" width="60%" alt="Disk Sanitization Steps"/> <br />
+  
+</p>
+<br />
+<br />
+<br />
+<br />
+
+
+
+<p>
+16) 
+  <br />
+<img src="https://i.imgur.com/AmntZGE.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
   
 </p>
 <br />
@@ -202,10 +188,10 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 
 
 <p>
-16) Under <strong>"Member Of"</strong> select <strong>"Domain"</strong> and enter <strong>"mydomain.com"</strong>. <br />
+19) Additionally, from this panel you have the option to disable a user's account. <br />.
   <br />
-<img src="https://i.imgur.com/5EBhFMO.png" height="80%" width="60%" alt="Disk Sanitization Steps"/> <br />
-  
+<img src="https://i.imgur.com/rwlactt.png" height="40%" width="80%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/uguEAUr.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
 </p>
 <br />
 <br />
@@ -213,31 +199,9 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <br />
 
 <p>
-17) Once completed, a prompt will ask for admin verification. Enter the adminuser you created in the previous steps to join <strong>Client-1</strong> to the domain. <br />
+20) When logging into <strong>client-1</strong> with a disabled account, the following message would display. <br />
   <br />
-<img src="https://i.imgur.com/1KPHc7G.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
-  
-</p>
-<br />
-<br />
-<br />
-<br />
-
-<p>
-18) For changes to be implemented, a restart will be required. Click <strong>"Restart Now"</strong>.<br />
-  <br />
-<img src="https://i.imgur.com/viTuBws.png" height="40%" width="60%" alt="Disk Sanitization Steps"/> <br />
-  
-</p>
-<br />
-<br />
-<br />
-<br />
-
-<p>
-19) Navigate back to <Strong>dc-1 to modify domain controller settings.</Strong> Now, we are going to create another Organizational Unit Navigate to <strong>Active Directory Users and Computers</strong>.<br />
-  <br />
-<img src="https://i.imgur.com/x1KjUDR.png" height="40%" width="80%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/HERSlxx.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
  
 </p>
 <br />
@@ -245,33 +209,11 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <br />
 <br />
 
-<p>
-20) <strong>[Right Click] mydomain.com > New > Organizational Unit</strong>. <br />
-  <br />
-<img src="https://i.imgur.com/HyeqUMH.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
- 
-</p>
-<br />
-<br />
-<br />
-<br />
 
 <p>
-  21) Name the Organizational Unit <strong>_CLIENTS</strong>. <br />
+22) To re-enable the account, navigate back to the user properties panel and select <strong>Enable Account</strong>.<br />
   <br />
-<img src="https://i.imgur.com/3eFc5sQ.png" height="60%" width="60%" alt="Disk Sanitization Steps"/> <br />
-  
-</p>
-<br />
-<br />
-<br />
-<br />
-
-<p>
-22) Next, log into <strong>Client-1</strong> as <strong>mydomain.com\jane_admin</strong>.<br />
-  <br />
-<img src="https://i.imgur.com/hWg2i4X.png" height="60%" width="60%" alt="Disk Sanitization Steps"/><br />
-<img src="https://i.imgur.com/IQkCG5d.png" height="60%" width="60%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/z5C2yOz.png" height="60%" width="60%" alt="Disk Sanitization Steps"/><br />
 </p>
 <br />
 <br />
@@ -280,7 +222,7 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <p>
 23) Navigate to <strong>"System Properties" > "Remote Desktop" > "Select Users that Can Remotely Access this PC"</strong>. <br />
   <br />
-<img src="https://i.imgur.com/PvHjPqR.png" height="60%" width="80%" alt="Disk Sanitization Steps"/><br />
+<img src="https://i.imgur.com/tA05HSb.png" height="60%" width="80%" alt="Disk Sanitization Steps"/><br />
 </p>
 <br />
 <br />
@@ -290,7 +232,7 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <p>
 24) Select <strong>"ADD"</strong>and type <strong>"domain users"</strong> to give users access to remote desktop. This will allow the users we create in the following steps to access remote desktop. <br />
   <br />
-<img src="https://i.imgur.com/bNoSMcI.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/UlGEWgv.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
 </p>
 <br />
 <br />
@@ -302,7 +244,7 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <p>
 25) To create users, navigate to <strong>Windows PowerShell ISE.</strong></strong><br />
   <br />
-<img src="https://i.imgur.com/rStTpHU.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
+<img src="https://i.imgur.com/Lsm4eA8.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
   
 </p>
 <br />
@@ -311,59 +253,5 @@ This tutorial outlines the setup of the pre-requisite Microsoft Azure architectu
 <br />
 
 
-<p>
-26) On the header bar, select <strong>File > New</strong>.  Then, paste the prompt provided in this text document https://drive.google.com/file/d/1-auybwRQDAw4wtEO2-DSK2EDU9KFZUH7/view?usp=sharing. <br />
-  <br />
-<img src="https://i.imgur.com/cCHwxb0.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
-<img src="https://i.imgur.com/HxM0u22.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
-<br />
-<br />
-<br />
-<br />
- 
-  
-<p>
-27) After running the prompt, users should begin to be created. This prompt will generate <strong>10,000</strong> unique users in Active Directory.<br />
-  <br />
-<img src="https://i.imgur.com/zPlGcxG.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
-  
-</p>
-<br />
-<br />
-<br />
-<br />
-
-<p>
-28) Navigate to <strong>Active Directory Users and Computers > mydomain.com > _EMPLOYEES.</strong> Next, select a user at random to login to <strong>Client-1</strong> to test our new Active Directory system.  For demonstration purposes, I've selected the user <Strong>"bat.cop"</Strong> as shown below.<br />
-  <br />
-<img src="https://i.imgur.com/coXCci2.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
- 
-</p>
-<br />
-<br />
-<br />
-<br />
-
-<p>
-29) After selecting a user at random, test this user's access by logging into <Strong>client-1</Strong> with their information. <br />
-  <br />
-<img src="https://i.imgur.com/SWs3mrp.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
- 
-</p>
-<br />
-<br />
-<br />
-<br />
-
-<p>
-30) As seen below, <strong>bat.cop</strong> has access to <strong>client-1</strong> under the <strong>mydomain.com</strong> domain.  This concludes this part of the Active Directory tutorial. <br />
-  <br />
-<img src="https://i.imgur.com/b1A7nXT.png" height="80%" width="80%" alt="Disk Sanitization Steps"/> <br />
-  
-</p>
-<br />
-<br />
-<br />
-<br />
 
 
