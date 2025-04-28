@@ -2,7 +2,7 @@
 <img src="https://i.imgur.com/pU5A58S.png" alt="Microsoft Active Directory Logo"/>
 </p>
 
-<h1>Active Directory: Group Policy & Account Management in the Cloud (Azure)(3/3)</h1>
+<h1>Active Directory: Group Policy & Account Management in the Cloud (Azure)(3/4)</h1>
 This tutorial outlines common functions in Active Directory that are used to manage group policy and users.<br />
 
 
